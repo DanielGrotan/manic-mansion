@@ -1,0 +1,55 @@
+@startuml diagram
+
+skinparam linetype ortho
+
+class Game {
+    -game_objects: Group[GameObject]
+    -player: Player
+    -ghosts: list[Ghost]
+    -sheep: list[Sheep]
+    -obstacle: list[Obstacle]
+    -left_zone: SafeZone
+    -right_zone: SafeZone
+    --
+    +run()
+}
+
+class GameObject extends pygame.sprite.Sprite {
+    +image: Surface
+    +rect: Rect
+    -bounding_rect: Rect <<rect that object can't move outside of>>
+    --
+    +update(keys_pressed: ScancodeWrapper, delta_time: float)
+}
+
+class SafeZone extends GameObject
+
+class Player extends GameObject {
+    -carried_sheep: Sheep | None
+    --
+    +update(keys_pressed: ScancodeWrapper, delta_time: float)
+    +pick_up_sheep(sheep: Sheep)
+    +is_carrying_sheep() -> bool
+    +drop_sheep()
+}
+
+class Ghost extends GameObject {
+    -velocity: Vector2
+    --
+    +update(keys_pressed: ScancodeWrapper, delta_time: float)
+}
+
+class Obstacle extends GameObject
+
+class Sheep extends GameObject {
+    +set_position(position: tuple[int, int])
+}
+
+Game "1" *-- "1..*" GameObject
+Game "1" *-- "1" Player
+Game "1" *-- "1..*" Ghost
+Game "1" *-- "1..*" Sheep
+Game "1" *-- "1..*" Obstacle
+Game "1" *-- "1..*" SafeZone
+
+@enduml

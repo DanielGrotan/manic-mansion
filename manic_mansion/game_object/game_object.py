@@ -16,6 +16,8 @@ class GameObject(Sprite):
         color: Color,
         rect_position: RectPosition = "topleft",
     ) -> None:
+        super().__init__()
+
         self.bounding_rect = bounding_rect
 
         self.image = Surface((width, height))

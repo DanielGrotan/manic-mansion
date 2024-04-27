@@ -8,8 +8,9 @@ class Game {
     -ghosts: list[Ghost]
     -sheep: list[Sheep]
     -obstacle: list[Obstacle]
-    -left_zone: SafeZone
-    -right_zone: SafeZone
+    -left_zone: Zone
+    -middle_zone: Zone
+    -right_zone: Zone
     --
     +run()
 }
@@ -22,7 +23,7 @@ class GameObject extends pygame.sprite.Sprite {
     +update(keys_pressed: ScancodeWrapper, delta_time: float)
 }
 
-class SafeZone extends GameObject
+class Zone extends GameObject
 
 class Player extends GameObject {
     -carried_sheep: Sheep | None
@@ -50,6 +51,6 @@ Game "1" *-- "1" Player
 Game "1" *-- "1..*" Ghost
 Game "1" *-- "1..*" Sheep
 Game "1" *-- "1..*" Obstacle
-Game "1" *-- "1..*" SafeZone
+Game "1" *-- "1..*" Zone
 
 @enduml

@@ -23,8 +23,8 @@ class Ghost(GameObject):
         super().__init__(bounding_rect, x, y, size, size, self.__COLOR, rect_position)
 
         self.velocity = Vector2(
-            random.uniform(-self.__MAX_SPEED, self.__MAX_SPEED),
-            random.uniform(-self.__MAX_SPEED, self.__MAX_SPEED),
+            self.__MAX_SPEED * random.choice([-1, 1]),
+            self.__MAX_SPEED * random.choice([-1, 1]),
         )
 
     def update(self, keys_pressed: ScancodeWrapper, delta_time: float) -> None:

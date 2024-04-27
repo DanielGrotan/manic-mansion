@@ -24,8 +24,11 @@ class Player(GameObject):
         super().__init__(bounding_rect, x, y, size, size, self.__COLOR, rect_position)
 
         self.carried_sheep: Sheep | None = None
+        self.previous_position = (x, y, rect_position)
 
     def update(self, keys_pressed: ScancodeWrapper, delta_time: float) -> None:
+        self.previous_position = (self.rect.left, self.rect.top, "topleft")
+
         up_pressed = keys_pressed[pygame.K_w] or keys_pressed[pygame.K_UP]
         down_pressed = keys_pressed[pygame.K_s] or keys_pressed[pygame.K_DOWN]
         left_pressed = keys_pressed[pygame.K_a] or keys_pressed[pygame.K_LEFT]
@@ -35,15 +38,15 @@ class Player(GameObject):
 
         dx = (
             speed
-            * (up_pressed ^ down_pressed)
-            * delta_time
-            * (down_pressed - up_pressed)
-        )
-        dy = (
-            speed
             * (left_pressed ^ right_pressed)
             * delta_time
             * (right_pressed - left_pressed)
+        )
+        dy = (
+            speed
+            * (up_pressed ^ down_pressed)
+            * delta_time
+            * (down_pressed - up_pressed)
         )
 
         self.rect.move_ip(dx, dy)
@@ -52,8 +55,18 @@ class Player(GameObject):
         if self.carried_sheep is not None:
             self.carried_sheep.set_position(self.rect.topright, "topleft")
 
+    def revert_movement(self) -> None:
+        setattr(
+            self.rect,
+            self.previous_position[2],
+            (self.previous_position[0], self.previous_position[1]),
+        )
+
     def pick_up_sheep(self, sheep: Sheep) -> None:
         self.carried_sheep = sheep
+
+    def is_carried_sheep(self, sheep: Sheep) -> bool:
+        return sheep == self.carried_sheep
 
     @property
     def is_carrying_sheep(self):
@@ -62,5 +75,6 @@ class Player(GameObject):
     def drop_sheep(self) -> None:
         if self.carried_sheep is not None:
             self.carried_sheep.set_position(self.rect.center, "center")
+            self.carried_sheep.drop()
 
         self.carried_sheep = None
